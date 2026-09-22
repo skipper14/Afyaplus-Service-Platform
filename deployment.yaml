@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: triage-api
+spec:
+  replicas: 3                     # run three copies
+  selector:
+    matchLabels:
+      app: triage-api
+  template:
+    metadata:
+      labels:
+        app: triage-api
+    spec:
+      containers:
+        - name: triage-api
+          image: afyaplus-triage:1.0.0
+          ports:
+            - containerPort: 8000
+          livenessProbe:          # k8s calls /health; a failing copy is replaced
+            httpGet:
+              path: /health
+              port: 8000
